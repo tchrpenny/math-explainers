@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Math Explainers</title>
+<meta name="description" content="Interactive math explainers for elementary teachers.">
+<style>
+  :root {
+    --bg: #F6F7F9; --card: #FFFFFF; --ink: #1B2433; --soft: #55607A;
+    --line: #DDE2EA; --accent: #0F766E; --accent-bg: #E3F4F1;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12161E; --card: #1B2130; --ink: #E8ECF3; --soft: #A3ADC2;
+      --line: #2C3446; --accent: #5EC8BA; --accent-bg: #173A37;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 17px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 48px 16px 64px; }
+  header h1 { margin: 0 0 6px; font-size: clamp(1.8rem, 4vw, 2.4rem); letter-spacing: -0.01em; }
+  header p { margin: 0; color: var(--soft); max-width: 60ch; }
+  .search {
+    margin: 28px 0 20px; width: 100%; padding: 12px 14px; font: inherit;
+    border: 1px solid var(--line); border-radius: 10px; background: var(--card); color: var(--ink);
+  }
+  .search:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+  a.card {
+    display: flex; flex-direction: column; gap: 8px; padding: 20px;
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+    color: inherit; text-decoration: none; transition: border-color .15s, transform .15s;
+  }
+  a.card:hover, a.card:focus-visible { border-color: var(--accent); transform: translateY(-2px); outline: none; }
+  .card h2 { margin: 0; font-size: 1.15rem; }
+  .card p { margin: 0; color: var(--soft); font-size: .95rem; }
+  .tag {
+    align-self: flex-start; font-size: .78rem; font-weight: 600; padding: 3px 9px;
+    border-radius: 999px; background: var(--accent-bg); color: var(--accent);
+  }
+  .empty { color: var(--soft); display: none; }
+  footer { margin-top: 48px; color: var(--soft); font-size: .85rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Math Explainers</h1>
+    <p>Short, interactive explainers for elementary teachers. Pick one and you're ready to teach.</p>
+  </header>
+
+  <input class="search" id="search" type="search" placeholder="Search explainers…" aria-label="Search explainers">
+
+  <main class="grid" id="grid"></main>
+  <p class="empty" id="empty">No explainers match that search.</p>
+
+  <footer>Built for teachers in Federal Way Public Schools.</footer>
+</div>
+
+<script>
+  // ADD NEW EXPLAINERS HERE — copy one line, change the details.
+  // "file" must match the file name in GitHub exactly.
+  const explainers = [
+    {
+      title: "Try–Discuss–Connect",
+      grades: "Grade 3",
+      blurb: "A three-part routine for math discussion: the 20% that gives 80% of the payoff, common slips, and a grade lens.",
+      file: "tdc-grade3.html"
+    },
+  ];
+
+  const grid = document.getElementById("grid");
+  const empty = document.getElementById("empty");
+
+  function render(q = "") {
+    q = q.trim().toLowerCase();
+    grid.innerHTML = "";
+    const list = explainers.filter(e =>
+      (e.title + " " + e.grades + " " + e.blurb).toLowerCase().includes(q));
+    for (const e of list) {
+      const a = document.createElement("a");
+      a.className = "card";
+      a.href = encodeURI(e.file);
+      a.innerHTML = `<span class="tag"></span><h2></h2><p></p>`;
+      a.querySelector(".tag").textContent = e.grades;
+      a.querySelector("h2").textContent = e.title;
+      a.querySelector("p").textContent = e.blurb;
+      grid.appendChild(a);
+    }
+    empty.style.display = list.length ? "none" : "block";
+  }
+
+  document.getElementById("search").addEventListener("input", ev => render(ev.target.value));
+  render();
+</script>
+</body>
+</html>
