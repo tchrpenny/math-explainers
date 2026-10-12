@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Run the Lesson: Grade 3 Unit 2</title>
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --paper:#F3F8F5; --grid:#D2E2DB; --ink:#16313A; --ink2:#46636D; --card:#FFFFFF; --line:#16313A; --shadow:#16313A;
+  --yellow:#F5B82E; --yellow-on:#16313A; --blue:#1F6FB2; --blue-on:#FFFFFF; --green:#1E7F55; --green-on:#FFFFFF; --red:#B8322A;
+  --good:#DDF2E5; --good-line:#1E7F55; --slip:#FBE3E0; --slip-line:#B8322A; --ok:#FFF0CC; --ok-line:#B7860B; --focus:#1F6FB2;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0F2228; --grid:#1A3A43; --ink:#EAF4F1; --ink2:#A7C3BD; --card:#16313A; --line:#9FC3BC; --shadow:#000000;
+    --yellow:#F5B82E; --yellow-on:#16313A; --blue:#6DB3EC; --blue-on:#0F2228; --green:#52C48C; --green-on:#0F2228; --red:#FF8A7E;
+    --good:#16402F; --good-line:#52C48C; --slip:#4A1F1D; --slip-line:#FF8A7E; --ok:#4A3B10; --ok-line:#F5B82E; --focus:#F5B82E;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F2228; --grid:#1A3A43; --ink:#EAF4F1; --ink2:#A7C3BD; --card:#16313A; --line:#9FC3BC; --shadow:#000000;
+  --yellow:#F5B82E; --yellow-on:#16313A; --blue:#6DB3EC; --blue-on:#0F2228; --green:#52C48C; --green-on:#0F2228; --red:#FF8A7E;
+  --good:#16402F; --good-line:#52C48C; --slip:#4A1F1D; --slip-line:#FF8A7E; --ok:#4A3B10; --ok-line:#F5B82E; --focus:#F5B82E;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);}
+*,*::before,*::after{box-sizing:inherit;}
+body{
+  margin:0; color:var(--ink); background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:28px 28px;
+  font-family:"Avenir Next","Segoe UI",system-ui,-apple-system,Roboto,sans-serif; font-size:17px; line-height:1.5;
+}
+@media (min-width:1200px){ body{font-size:19px;} }
+h1,h2,h3{font-family:Rockwell,"Roboto Slab","Zilla Slab",Georgia,serif; line-height:1.2; margin:0 0 .4em;}
+h1{font-size:2.1rem;} h2{font-size:1.45rem;} h3{font-size:1.1rem;}
+p{margin:.5em 0;}
+.wrap{max-width:860px; margin:0 auto; padding:12px 14px 48px;}
+button{font:inherit; color:inherit;}
+:focus-visible{outline:3px solid var(--focus); outline-offset:2px;}
+
+/* HUD */
+.hud{position:sticky; top:env(safe-area-inset-top,0px); z-index:5; background:var(--paper); border-bottom:2px solid var(--line); padding:8px 14px;}
+.hud-in{max-width:860px; margin:0 auto; display:flex; align-items:center; gap:12px; flex-wrap:wrap; justify-content:space-between;}
+.brand{font-family:Rockwell,"Roboto Slab",Georgia,serif; font-weight:700;}
+.pips{display:flex; gap:5px; flex:1; min-width:140px; justify-content:center;}
+.pip{width:100%; max-width:26px; height:10px; border:2px solid var(--line); border-radius:6px; background:transparent;}
+.pip.done{background:var(--ink);} .pip.now{background:var(--yellow);}
+.score{display:flex; gap:12px; font-weight:700; white-space:nowrap;}
+
+/* cards */
+.card{background:var(--card); border:2px solid var(--line); border-radius:10px; padding:16px; box-shadow:4px 4px 0 var(--shadow); margin:14px 0;}
+.band{display:flex; gap:10px; align-items:baseline; flex-wrap:wrap; background:var(--acc); color:var(--on); border:2px solid var(--line); border-radius:8px; padding:7px 12px; margin-top:16px; font-weight:700;}
+.band small{font-weight:500; opacity:.95;}
+.lvl-try{--acc:var(--yellow); --on:var(--yellow-on);} .lvl-discuss{--acc:var(--blue); --on:var(--blue-on);} .lvl-connect{--acc:var(--green); --on:var(--green-on);}
+.problem{border:2px dashed var(--line); border-radius:8px; padding:8px 12px; background:var(--card); margin-top:12px; font-size:.95rem;}
+.problem b{font-family:Rockwell,Georgia,serif;}
+.intro{background:var(--ok); border:2px solid var(--ok-line); border-radius:8px; padding:8px 12px; margin:12px 0; font-size:.95rem;}
+.scene{font-size:1.05rem;}
+.ask{font-weight:700; margin-top:10px;}
+
+.opt{display:block; width:100%; text-align:left; background:var(--card); border:2px solid var(--line); border-radius:8px; padding:12px 14px; margin:10px 0; cursor:pointer; box-shadow:3px 3px 0 var(--shadow);}
+.opt:hover:not(:disabled){transform:translate(-1px,-1px);}
+.opt:disabled{cursor:default; opacity:.55;}
+.opt.picked{opacity:1; border-width:3px;}
+.opt.picked.good{background:var(--good); border-color:var(--good-line);} .opt.picked.ok{background:var(--ok); border-color:var(--ok-line);} .opt.picked.slip{background:var(--slip); border-color:var(--slip-line);}
+.btn{display:inline-block; background:var(--yellow); color:var(--yellow-on); border:2px solid var(--line); border-radius:8px; padding:10px 18px; font-weight:700; cursor:pointer; box-shadow:3px 3px 0 var(--shadow);}
+.btn:hover:not(:disabled){transform:translate(-1px,-1px);} .btn:disabled{opacity:.5; cursor:not-allowed;}
+.btn.alt{background:var(--card); color:var(--ink);}
+.row{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;}
+
+.fb{border:2px solid; border-radius:8px; padding:10px 14px; margin-top:12px;}
+.fb.good{background:var(--good); border-color:var(--good-line);} .fb.ok{background:var(--ok); border-color:var(--ok-line);} .fb.slip{background:var(--slip); border-color:var(--slip-line);}
+.fb .tag{font-weight:800;} .fb .say{font-style:italic;}
+
+/* reads */
+.tray{display:grid; gap:8px; margin:10px 0;}
+.slot{display:flex; gap:10px; align-items:center; border:2px dashed var(--line); border-radius:8px; padding:8px 12px; min-height:48px; background:transparent; text-align:left; width:100%; cursor:pointer;}
+.slot.full{border-style:solid; background:var(--card);}
+.slot .n{font-family:Rockwell,Georgia,serif; font-weight:700; min-width:3.2em;}
+.cards{display:grid; gap:8px; grid-template-columns:repeat(auto-fit,minmax(230px,1fr));}
+.rc{border:2px solid var(--line); border-radius:8px; background:var(--card); padding:10px 12px; text-align:left; cursor:pointer; box-shadow:2px 2px 0 var(--shadow);}
+.rc:disabled{opacity:.35; cursor:default;}
+
+/* classroom */
+.timer{height:12px; border:2px solid var(--line); border-radius:8px; overflow:hidden; background:var(--card);}
+.timer i{display:block; height:100%; background:var(--green);}
+.timer-row{display:flex; justify-content:space-between; font-weight:700; margin:6px 0;}
+.room{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:12px 0;}
+@media (max-width:600px){ .room{grid-template-columns:repeat(2,1fr);} }
+.desk{display:flex; flex-direction:column; align-items:center; gap:4px; padding:10px 6px; border:2px solid var(--line); border-radius:12px; background:var(--card); cursor:pointer; box-shadow:3px 3px 0 var(--shadow);}
+.desk:disabled{opacity:.5; cursor:not-allowed;}
+.desk .av{width:40px; height:40px; border-radius:50%; background:var(--yellow); color:var(--yellow-on); border:2px solid var(--line); display:grid; place-items:center; font-weight:800;}
+.desk small{color:var(--ink2);}
+.desk.seen{border-style:dashed;} .desk.open{outline:3px solid var(--focus); outline-offset:2px;}
+.panel{border:2px solid var(--line); border-radius:10px; background:var(--card); padding:14px; margin:12px 0;}
+.work{display:flex; gap:16px; align-items:center; flex-wrap:wrap; padding:10px; border:2px solid var(--line); border-radius:8px; background:var(--paper); margin:8px 0;}
+.groups{display:flex; gap:10px; flex-wrap:wrap;}
+.grp{display:grid; grid-template-columns:repeat(3,auto); gap:3px; padding:5px; border:2px solid var(--line); border-radius:50%/40%; justify-content:center;}
+.dot{display:block; width:11px; height:11px; border-radius:50%; background:var(--ink);}
+.dot.ctr{width:15px; height:15px; background:var(--yellow); border:2px solid var(--line);}
+.arr{display:grid; gap:4px;} .arow{display:flex; gap:5px; padding-bottom:4px;} .arow.cut{border-bottom:3px dashed var(--red);}
+.cap{margin:0; font-size:.9rem; color:var(--ink2);}
+.eq{font-family:Rockwell,Georgia,serif; font-size:1.3rem; display:flex; gap:6px; align-items:center; flex-wrap:wrap;}
+.bx{display:inline-grid; place-items:center; width:34px; height:34px; border:2px solid var(--line); border-radius:6px; background:var(--card);}
+.blank{border:2px dashed var(--line); border-radius:6px; padding:18px 26px; color:var(--ink2);}
+.clip{border:2px solid var(--line); border-radius:8px; background:var(--ok); padding:10px 12px 8px; margin:12px 0; position:relative;}
+.clip::before{content:""; position:absolute; top:-9px; left:50%; width:44px; height:14px; margin-left:-22px; background:var(--ink2); border:2px solid var(--line); border-radius:4px;}
+.clip h3{margin-top:6px;} .clip ul{margin:0; padding-left:1.1em;} .clip li{margin:2px 0;}
+.empty{color:var(--ink2); font-style:italic;}
+
+/* plan builder */
+.pick{display:flex; gap:10px; align-items:center; justify-content:space-between; border:2px solid var(--line); border-radius:8px; padding:8px 10px; background:var(--card); margin:6px 0; flex-wrap:wrap;}
+.mini{border:2px solid var(--line); border-radius:6px; background:var(--card); padding:2px 9px; cursor:pointer; font-weight:700;}
+.mini:disabled{opacity:.35;}
+.stars{font-size:1.4rem; letter-spacing:2px;}
+.checks{list-style:none; padding:0; margin:8px 0;} .checks li{margin:6px 0; padding-left:1.6em; position:relative;}
+.checks li::before{position:absolute; left:0; content:"✔"; color:var(--good-line);} .checks li.no::before{content:"✏️";}
+
+/* debrief */
+.slipitem{border-left:6px solid var(--slip-line); padding:4px 0 4px 12px; margin:10px 0;}
+.badges{display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:10px;}
+.badge{border:2px solid var(--line); border-radius:10px; padding:10px; background:var(--card); text-align:center;}
+.badge.off{opacity:.45; filter:grayscale(1);} .badge .e{font-size:2rem;}
+.code{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:1.15rem; letter-spacing:.5px; background:var(--card); border:2px solid var(--line); border-radius:8px; padding:10px; width:100%; color:var(--ink);}
+input[type=text]{font:inherit; color:var(--ink); background:var(--card); border:2px solid var(--line); border-radius:8px; padding:10px; width:100%; max-width:340px;}
+.bar{height:16px; border:2px solid var(--line); border-radius:8px; overflow:hidden; background:var(--card);} .bar i{display:block; height:100%; background:var(--yellow);}
+.foot{font-size:.85rem; color:var(--ink2); margin-top:28px;}
+details{margin:12px 0;} summary{cursor:pointer; font-weight:700;}
+@media (prefers-reduced-motion: reduce){ .opt,.btn{transition:none;} .opt:hover,.btn:hover{transform:none;} }
+</style>
+</head>
+<body>
+<div id="hud"></div>
+<main class="wrap" id="app"></main>
+<noscript><p class="wrap">This game needs JavaScript turned on.</p></noscript>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- helpers ---------- */
+var app=document.getElementById('app'), hud=document.getElementById('hud');
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function shuffle(a){var b=a.slice();for(var i=b.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=b[i];b[i]=b[j];b[j]=t;}return b;}
+function dots(n,cls){var s='';for(var i=0;i<n;i++)s+='<i class="'+(cls||'dot')+'"></i>';return s;}
+function groups(g,per,cls){var s='<div class="groups">';for(var i=0;i<g;i++)s+='<span class="grp">'+dots(per,cls)+'</span>';return s+'</div>';}
+function arr(r,c,split){var s='<div class="arr">';for(var i=0;i<r;i++)s+='<span class="arow'+(split&&i===split-1?' cut':'')+'">'+dots(c)+'</span>';return s+'</div>';}
+function mmss(t){t=Math.max(0,t);return Math.floor(t/60)+':'+('0'+(t%60)).slice(-2);}
+
+/* ---------- content ---------- */
+var PROBLEM='Ms. Rivera makes 4 reward charts. She puts 6 stickers on each chart. How many stickers does she use in all?';
+
+var SLIPS={
+  S1:{bit:0,name:'Scrambled the Reads',tip:'Write the three Read questions, in order, on a sticky note before the lesson.'},
+  S2:{bit:1,name:'Named the operation',tip:'Let students decide what the story needs. Ask “What is happening?” instead of “What do we do?”'},
+  S3:{bit:2,name:'Prescribed the model',tip:'Put the tools out and say “any tool or picture.” Save the array and bar model for Connect It.'},
+  S4:{bit:3,name:'Did the thinking',tip:'Hold hints until a student is stuck, then ask one question and walk away.'},
+  S5:{bit:4,name:'Rescued a stuck student',tip:'Try: “What do you notice? What could help you?” Then leave and come back.'},
+  S6:{bit:5,name:'Took the tools away',tip:'Noisy tools are a cue to ask “How is this helping you think?” Not to collect them.'},
+  S7:{bit:6,name:'Moved on too soon',tip:'Use a three-lap plan: who has started, what strategies, which ones to share.'},
+  S8:{bit:7,name:'Thin clipboard',tip:'Jot a name and a strategy at each stop. Two or three words is enough.'},
+  S9:{bit:8,name:'No partner structure',tip:'Set A/B partners ahead of time and say who shares first. Then circulate and listen.'},
+  S10:{bit:9,name:'Teacher did the talking',tip:'Use the Four Rs: repeat, rephrase, reword, record. Let students carry the explanation.'},
+  S11:{bit:10,name:'Shut down an error',tip:'Start with “What did this student do well?” then compare to another strategy.'},
+  S12:{bit:11,name:'Connect It misstep',tip:'Choose one or two questions that summarize the key idea. Use talk first, writing second.'},
+  S13:{bit:12,name:'Missed the data in Apply It',tip:'Circulate with a short look-for list. Pull a small group. Point finishers to enrichment.'}
+};
+
+var LEVELS={
+  try:{label:'Try It',cls:'lvl-try',time:'8–10 minutes in a real lesson',intro:'Students make sense of the problem (3–4 minutes), then solve on their own (5–6 minutes) while you circulate and take notes.'},
+  discuss:{label:'Discuss It',cls:'lvl-discuss',time:'9–14 minutes in a real lesson',intro:'Partner talk (1–2 minutes), then a whole-class comparison of two or three strategies you chose (8–12 minutes).'},
+  connect:{label:'Connect It',cls:'lvl-connect',time:'5–8 minutes, then Apply It',intro:'You use one or two questions to connect strategies to the key idea. Then students apply it to a new problem while you gather data.'}
+};
+
+var FLOW=[
+  {id:'m1',lvl:'try',step:'Make sense of the problem',type:'reads',first:true},
+  {id:'m2',lvl:'try',step:'Make sense of the problem',type:'choice'},
+  {id:'m3',lvl:'try',step:'Solve and support thinking: the launch',type:'choice'},
+  {id:'m4',lvl:'try',step:'Solve and support thinking: work time',type:'work'},
+  {id:'m5',lvl:'discuss',step:'Share your thinking with a partner',type:'choice',first:true},
+  {id:'m6',lvl:'discuss',step:'Select and sequence strategies',type:'plan'},
+  {id:'m7',lvl:'discuss',step:'Compare strategies',type:'choice'},
+  {id:'m8',lvl:'discuss',step:'Compare strategies: an error',type:'choice'},
+  {id:'m9',lvl:'connect',step:'Make connections and reflect',type:'pick',first:true},
+  {id:'m10',lvl:'connect',step:'Make connections and reflect',type:'choice'},
+  {id:'m11',lvl:'connect',step:'Apply your thinking to a new problem',type:'choice'}
+];
+
+var CH={
+ m2:{scene:'You just read the problem aloud for Read 1. Students are looking at the board.',ask:'What do you say next?',opts:[
+  {t:'“Okay, this is a multiplication problem. Who can tell me what 4 × 6 is?”',kind:'slip',slip:'S2',
+   result:'Hands shoot up: “24!” Nobody talked about the charts or the stickers, and students unsure of their facts have nothing to hold on to.',
+   why:'Naming the operation does the sense-making for students. Read 1 is for the story, before numbers or strategies.',say:'“Think quietly: what is this problem about?”'},
+  {t:'“Think quietly: what is this problem about?” Give think time, then call on a few students at random.',kind:'good',
+   result:'You hear “Somebody putting stickers on charts” and “a reward thing.” One student asks what a reward chart is, a word worth clearing up before anyone solves.',
+   why:'A question, think time, and random sharing put every student to work on the story and show you which words need attention.'},
+  {t:'“Let me say it simply: Ms. Rivera has 4 charts with 6 stickers on each. Who’s ready to solve?”',kind:'slip',slip:'S4',
+   result:'Students nod and several start writing 4 × 6 right away. They are using your wording, not their own picture of the story.',
+   why:'Interpreting the problem for students over-scaffolds. The Reads are how students learn to do it themselves.',say:'“What is this problem about? Tell your partner in your own words.”'},
+  {t:'“Read it with me again. Thumbs up if you get it.”',kind:'ok',
+   result:'A forest of thumbs. It feels fast, but you can’t tell who understands the story and who is following along.',
+   why:'A thumbs check skips the part that matters: a question, think time, and students saying it in their own words.',say:'“What is this problem about?” then think time and a few random shares.'}
+ ]},
+ m3:{scene:'The Reads are done and students understand the story. Now they work on their own for about 5–6 minutes.',ask:'What do you say to launch the work?',opts:[
+  {t:'“This is a multiplication problem, so multiply 4 and 6 and show me.”',kind:'slip',slip:'S2',
+   result:'Papers come back with 4 × 6 at the top and not much else. Discuss It will have almost nothing to compare.',
+   why:'Choosing the operation is part of the thinking you want students to do.',say:'“Use any tool or picture that makes sense to you.”'},
+  {t:'“Draw an array to solve it. Start with the first row for me.”',kind:'slip',slip:'S3',
+   result:'Twenty-two papers show the same array. The counters, pictures, and repeated addition you would have compared later never appear.',
+   why:'Prescribing the model removes the variety that makes Discuss It work.',say:'“Use any tool or picture that makes sense to you.”'},
+  {t:'“Here’s a hint before you start: count by 6s four times.”',kind:'slip',slip:'S4',
+   result:'Everyone counts by 6s. The students who would have tried something unexpected never get the chance.',
+   why:'Hints before anyone has tried cut off productive struggle. If a student gets stuck, ask one question and walk away.',say:'“Show your thinking any way you like.”'},
+  {t:'“Use any tool or picture that makes sense to you. Show your thinking. It’s okay if you don’t finish. Tools are in the bin.”',kind:'good',
+   result:'Students reach for counters, grid paper, and pencils. You can already see different starts across the room.',
+   why:'Open choice of tools and strategies gives you variety to select from, and “it’s okay not to finish” builds persistence.'}
+ ]},
+ m5:{scene:'Work time is over. Students’ pages are in front of them and the partner-talk prompt is on the board.',ask:'How do you launch partner talk?',opts:[
+  {t:'“Turn and talk to someone near you.”',kind:'slip',slip:'S9',
+   result:'Most pairs get going, but one pair sits silent and another has one voice for the whole minute. You can’t tell who actually explained their thinking.',
+   why:'Without A/B roles and a share order, one partner can take over and some students never get airtime.',say:'“Partner A shares first, then Partner B.”'},
+  {t:'“Partner A shares first, then Partner B. Listen for one way your strategy matches your partner’s.” You circulate and listen.',kind:'good',
+   result:'You overhear a student explain how counters became groups, and another say “two friendly 2 × 6s.” Your picks for the whole-class talk get sharper.',
+   why:'Clear roles let students start talking right away. Listening in is your chance to select and sequence.'},
+  {t:'“Go ahead, you two!” You stay at the front and set up the next slide.',kind:'slip',slip:'S9',
+   result:'The room is busy, but you can’t hear who has the array or who is stuck, so you end up picking whoever raises a hand.',
+   why:'Partner talk is your best window into student thinking. Use it to listen.',say:'“Partner A shares first, then Partner B.” Then walk and listen.'}
+ ]},
+ m7:{scene:'Talk-move practice. Whatever you chose to share, try this moment: Bea shows four circles with six dots in each and says, “I counted by 6s: 6, 12, 18, 24.” The room is quiet.',ask:'What’s your move?',opts:[
+  {t:'Restate it for the class: “Bea drew four groups of six and counted by sixes to 24. Nice. Next strategy.”',kind:'slip',slip:'S10',
+   result:'The class stays quiet because you did the thinking out loud. Bea nods, but no one else had to process her idea.',
+   why:'Your job is to get students explaining and building on each other’s ideas, not to do it for them.',say:'“Who can say Bea’s idea in their own words?”'},
+  {t:'“Who can say Bea’s idea in their own words?” Then: “Turn and tell your partner where you see the 6s in her picture.”',kind:'good',
+   result:'Three students rephrase her idea. In the turn and talk you overhear, “each circle is a chart.” You record it on the board, which is the connection you want.',
+   why:'Repeat, rephrase, reword, and record (the Four Rs), plus think time, keep the thinking with students.'},
+  {t:'“Thumbs up if you did something like Bea.”',kind:'ok',
+   result:'Most thumbs go up and engagement is high, but nobody has explained or compared anything yet.',
+   why:'Hand signals are a good way to include everyone. They work best alongside a question about how strategies are alike or different.',say:'“How is your strategy like Bea’s? How is it different?”'}
+ ]},
+ m8:{scene:'Eli shares: “4 + 6 = 10, so 10 stickers.” A few students whisper, “No…”',ask:'What do you do?',opts:[
+  {t:'“Not quite, Eli. Who has the right answer?”',kind:'slip',slip:'S11',
+   result:'Eli sinks in his chair. Hands go up with “24,” but no one learns why 10 doesn’t fit the story, and fewer students will share next time.',
+   why:'Errors are some of the best learning moments in a lesson. Correcting right away ends the thinking.',say:'“What did Eli do well? Does 10 match the story?”'},
+  {t:'“Thank you, Eli. What did he do well? Where do the 4 and the 6 show up in Bea’s picture? Does 10 stickers match the story?”',kind:'good',
+   result:'Students notice Eli found the two numbers in the problem. Then they see that Bea’s picture has 4 groups with 6 in each, which 10 can’t be.',
+   why:'Naming what the student did right and comparing to another strategy makes the error safe and useful.'},
+  {t:'Thank Eli quietly and move on to the next strategy.',kind:'slip',slip:'S11',
+   result:'The whisper of “No…” hangs in the air. Eli is left unsure and the class misses the best chance to compare adding with multiplying.',
+   why:'Skipping an error treats it as something to hide.',say:'“What did Eli do well? Does 10 match the story?”'}
+ ]},
+ m10:{scene:'You’ve picked your Connect It questions. Students have about five minutes.',ask:'How do you run them?',opts:[
+  {t:'Everyone writes full answers to every question, silently, at their desks.',kind:'slip',slip:'S12',
+   result:'It feels like a worksheet. Pencils scratch for the whole time and the best ideas stay locked in individual notebooks.',
+   why:'Connect It questions can be used flexibly: individually, with a partner, or as a class. The conversation should do the work.',say:'Think time, turn and talk, then a whole-class share.'},
+  {t:'Think time, then turn and talk on one question and a whole-class share. Students write a short response to the other one.',kind:'good',
+   result:'You hear students link the circles to the rows. The short written responses double as a quick check on who got it.',
+   why:'Mixing talk and writing keeps the pace and shows you who understands the key idea.'},
+  {t:'Skip them. Time is short, so go straight to Apply It.',kind:'slip',slip:'S12',
+   result:'Apply It starts on time, but the connection between Bea’s picture and the array never gets named. Some students lack the idea they need to begin.',
+   why:'When pacing is tight, choose fewer questions and use them flexibly. Skipping them removes the step that confirms understanding.',say:'Pick one question and discuss it with a partner.'}
+ ]},
+ m11:{scene:'Students are working on Apply It. Four finish in three minutes, five look stuck, and the rest are busy.',ask:'What now?',opts:[
+  {t:'Stop everyone and reteach the whole lesson at the board.',kind:'slip',slip:'S13',
+   result:'The four finishers sit through a repeat and the five stuck students still need something different from a second explanation.',
+   why:'Apply It is where you gather evidence of who needs what. Reteaching to the middle misses both ends.',say:'Circulate and look at work first.'},
+  {t:'Make the tools available to everyone and circulate with a short look-for list. Pull the stuck students for a small group with hands-on materials. Point finishers to enrichment or practice.',kind:'good',
+   result:'In the small group, counters make the array visible, and finishers stay busy. You leave with notes on who needs what tomorrow.',
+   why:'Circulating, grouping, and extending is how Apply It turns into usable data.'},
+  {t:'Stay at your desk and answer questions from anyone who comes up.',kind:'slip',slip:'S13',
+   result:'The students who most need you are the least likely to come. You have no data on who needs what tomorrow.',
+   why:'Waiting for questions misses the students who don’t know what to ask.',say:'Circulate with a look-for list.'}
+ ]}
+};
+
+var READ_CARDS=[
+  {id:'r1',t:'What is the problem about?'},
+  {id:'r2',t:'What are we trying to find out?'},
+  {id:'r3',t:'What are the important quantities and how are they related?'},
+  {id:'d1',t:'What operation should we use?'},
+  {id:'d2',t:'Which model should you draw?'},
+  {id:'d3',t:'Who can tell me the answer?'}
+];
+
+var DESKS=[
+  {id:'aiden',name:'Aiden',tag:'Counters in 4 piles, counted by ones',level:1,kind:'strategy',
+    see:'Four piles of counters with six in each. He touches each one and counts 1, 2, 3 … 24.',vis:function(){return groups(4,6,'dot ctr')+'<p class="cap">Counting 1 to 24</p>';}},
+  {id:'bea',name:'Bea',tag:'Picture of 4 groups of 6, skip counting',level:2,kind:'strategy',
+    see:'Four circles with six dots in each. She wrote 6, 12, 18, 24 under the circles.',vis:function(){return groups(4,6)+'<p class="cap">6, 12, 18, 24</p>';}},
+  {id:'carlos',name:'Carlos',tag:'Repeated addition, 6 + 6 + 6 + 6',level:3,kind:'strategy',
+    see:'He wrote 6 + 6 + 6 + 6 = 24 and says, “Four sixes.”',vis:function(){return '<div class="eq"><b class="bx">6</b>+<b class="bx">6</b>+<b class="bx">6</b>+<b class="bx">6</b> = 24</div>';}},
+  {id:'dana',name:'Dana',tag:'Array split into two friendly parts, 12 + 12',level:4,kind:'strategy',
+    see:'A 4-by-6 array of dots with a line across the middle. She wrote 12 + 12 = 24.',vis:function(){return arr(4,6,2)+'<p class="cap">12 + 12 = 24</p>';}},
+  {id:'eli',name:'Eli',tag:'Added the two numbers, 4 + 6 = 10',level:3,kind:'error',
+    see:'He wrote 4 + 6 = 10 and circled 10.',vis:function(){return '<div class="eq">4 + 6 = 10</div>';}},
+  {id:'fatima',name:'Fatima',tag:'Correct picture, miscounted (23)',level:2,kind:'partial',
+    see:'Four groups of six drawn carefully, but her total says 23.',vis:function(){return groups(4,6)+'<p class="cap">Total: 23</p>';}},
+  {id:'gus',name:'Gus',tag:'',level:1,kind:'partial',stuck:true,
+    see:'Blank paper. The counters are still in the bin and he is looking around the room.',vis:function(){return '<div class="blank">Blank page</div>';}},
+  {id:'hana',name:'Hana',tag:'Turned it around: 6 groups of 4',level:4,kind:'strategy',
+    see:'Six groups with four dots each. She counts 4, 8, 12, 16, 20, 24.',vis:function(){return groups(6,4)+'<p class="cap">4, 8, 12, 16, 20, 24</p>';}}
+];
+function deskById(id){for(var i=0;i<DESKS.length;i++)if(DESKS[i].id===id)return DESKS[i];}
+
+var QS=[
+  {id:'q1',t:'Where do you see the 6 in the equal-groups picture? Where do you see it in the array?',good:true,pri:'array'},
+  {id:'q2',t:'How could you break 4 × 6 into two smaller facts you already know?',good:true,pri:'array'},
+  {id:'q3',t:'In 4 × 6 = 24, what does the 4 tell us about the stickers? The 6? The 24?',good:true,pri:'meaning'},
+  {id:'q4',t:'Which strategy would you pick if Ms. Rivera made 5 charts instead? Why?',good:true,pri:'meaning'},
+  {id:'q5',t:'Copy the words factor and product three times each.',good:false},
+  {id:'q6',t:'Solve 4 × 7, 4 × 8, and 4 × 9 as fast as you can.',good:false}
+];
+
+var BADGES=[
+  {id:'reads',e:'📖',name:'Three Reads Rockstar',how:'Order the Reads and open Read 1 well on your first tries.',test:function(){return S.res.m1&&S.res.m1.tries===1&&S.res.m2&&S.res.m2.firstKind==='good';}},
+  {id:'hands',e:'🙌',name:'Hands Off the Operation',how:'Never name the operation, model, or hint.',test:function(){return !S.slips.has('S2')&&!S.slips.has('S3')&&!S.slips.has('S4');}},
+  {id:'patience',e:'🧘',name:'Patience of a Saint',how:'Don’t rescue, don’t take tools, don’t rush work time.',test:function(){return !S.slips.has('S5')&&!S.slips.has('S6')&&!S.slips.has('S7');}},
+  {id:'clip',e:'📋',name:'Clipboard Champion',how:'Jot five or more strategies.',test:function(){return Object.keys(S.jotted).length>=5;}},
+  {id:'sage',e:'🧩',name:'Sequence Sage',how:'Earn three stars on select and sequence.',test:function(){return S.res.m6&&S.res.m6.stars===3;}},
+  {id:'mender',e:'🛠️',name:'Mistake Mender',how:'Handle Eli’s error well on your first try.',test:function(){return S.res.m8&&S.res.m8.firstKind==='good';}},
+  {id:'connector',e:'🔗',name:'Connector',how:'Pick strong Connect It questions and run them flexibly.',test:function(){return S.res.m9&&S.res.m9.xp>=20&&S.res.m10&&S.res.m10.firstKind==='good';}},
+  {id:'zero',e:'✨',name:'Zero Smudges',how:'Finish with no slips at all.',test:function(){return S.slips.size===0;}}
+];
+
+/* ---------- state ---------- */
+var S=null;
+function fresh(name){
+  S={screen:'start',name:name||'',slips:new Set(),res:{},ans:{},jotted:{},visited:{},time:360,
+     work:{open:null,ended:false,gus:null,ev:null,evTriggered:false,warn:false,calledEarly:false,visitCount:0},
+     picks:[],qpicks:[],tray:[],cards:shuffle(READ_CARDS),reads:{tries:0,msg:null,done:false},planDone:false,pickDone:false,qmsg:''};
+}
+fresh('');
+function totalXP(){var t=0;for(var k in S.res)t+=S.res[k].xp||0;return t;}
+var MAXXP=260;
+function idx(id){for(var i=0;i<FLOW.length;i++)if(FLOW[i].id===id)return i;return -1;}
+function go(id){S.screen=id;render();window.scrollTo(0,0);}
+function next(){var i=idx(S.screen);if(i<FLOW.length-1)go(FLOW[i+1].id);else go('debrief');}
+
+/* ---------- HUD ---------- */
+function renderHud(){
+  if(S.screen==='start'){hud.innerHTML='';return;}
+  var cur=S.screen==='debrief'?FLOW.length:idx(S.screen);
+  var pips='';
+  for(var i=0;i<FLOW.length;i++)pips+='<span class="pip'+(i<cur?' done':(i===cur?' now':''))+'"></span>';
+  hud.innerHTML='<div class="hud"><div class="hud-in"><span class="brand">Run the Lesson</span>'+
+    '<div class="pips" role="img" aria-label="Moment '+Math.min(cur+1,FLOW.length)+' of '+FLOW.length+'">'+pips+'</div>'+
+    '<div class="score"><span>⭐ '+totalXP()+' XP</span><span>✏️ '+S.slips.size+' slip'+(S.slips.size===1?'':'s')+'</span></div></div></div>';
+}
+
+/* ---------- views ---------- */
+function viewStart(){
+  var best='';
+  try{var b=JSON.parse(localStorage.getItem('rtl_g3u2_best')||'null');if(b)best='<p class="cap">Your best on this device: '+b.xp+' XP</p>';}catch(e){}
+  return '<div class="card"><h1>Run the Lesson</h1><h2>Grade 3, Unit 2: Multiplication and Division</h2>'+
+  '<p>You’re teaching a Try–Discuss–Connect lesson. Make the calls a facilitator makes, in order, and see what each choice does to the lesson.</p>'+
+  '<ul><li><b>About 15 minutes.</b> Works on a phone or a projector.</li>'+
+  '<li><b>Watch for slips.</b> They are tempting moves that most of us have made. Each one shows what it costs and what to try instead.</li>'+
+  '<li><b>Your clipboard follows you.</b> What you notice in Try It decides what you can share in Discuss It.</li></ul>'+
+  '<p><label for="nm"><b>Nickname for your badge code</b> (optional, never student names)</label><br><input type="text" id="nm" maxlength="12" autocomplete="off" placeholder="e.g. Jan"></p>'+
+  '<div class="row"><button class="btn" data-act="start">Start the lesson</button></div>'+best+'</div>'+
+  '<details><summary>Coach decoder</summary><div class="card"><p>Paste a badge code to see which slips it contains.</p>'+
+  '<input type="text" id="dec" style="max-width:100%" placeholder="TDC-U2-JAN-186-0A41-Q"><div class="row"><button class="btn alt" data-act="decode">Decode</button></div><div id="decout"></div></div></details>'+
+  '<p class="foot">Original problem and student work, written for professional learning. Built around the i-Ready Classroom Mathematics Try–Discuss–Connect routine; use it alongside your Teacher’s Guide. Not affiliated with Curriculum Associates.</p>';
+}
+
+function header(f){
+  var L=LEVELS[f.lvl];
+  var h='<div class="band '+L.cls+'"><span>'+L.label+'</span><small>'+esc(f.step)+'</small></div>';
+  if(f.first)h+='<div class="intro"><b>'+L.label+':</b> '+esc(L.intro)+' <i>('+L.time+')</i></div>';
+  return h;
+}
+function problemStrip(){return '<div class="problem"><b>Today’s problem:</b> '+esc(PROBLEM)+'</div>';}
+
+function ensureAns(id){
+  if(!S.ans[id]){var n=CH[id].opts.length,o=[];for(var i=0;i<n;i++)o.push(i);S.ans[id]={order:shuffle(o),picked:null,tries:0};}
+  return S.ans[id];
+}
+function viewChoice(f){
+  var m=CH[f.id],a=ensureAns(f.id),h=header(f)+problemStrip();
+  h+='<div class="card"><p class="scene">'+esc(m.scene)+'</p><p class="ask">'+esc(m.ask)+'</p>';
+  for(var k=0;k<a.order.length;k++){
+    var i=a.order[k],o=m.opts[i],picked=a.picked===i;
+    h+='<button class="opt'+(picked?' picked '+o.kind:'')+'" data-act="choose" data-i="'+i+'"'+(a.picked!=null?' disabled':'')+'>'+esc(o.t)+'</button>';
+  }
+  if(a.picked!=null){
+    var p=m.opts[a.picked];
+    var tag=p.kind==='good'?'Strong move.':(p.kind==='ok'?'Okay, but there’s more to do.':'Slip: '+SLIPS[p.slip].name+'.');
+    h+='<div class="fb '+p.kind+'" role="status"><p><span class="tag">'+esc(tag)+'</span></p><p><b>In the room:</b> '+esc(p.result)+'</p><p><b>Why it matters:</b> '+esc(p.why)+'</p>'+
+       (p.say?'<p><b>Try saying:</b> <span class="say">'+esc(p.say)+'</span></p>':'')+'</div>';
+    h+='<div class="row">'+(p.kind!=='good'?'<button class="btn alt" data-act="retry">Try a different move</button>':'')+'<button class="btn" data-act="next">Continue</button></div>';
+  }
+  return h+'</div>';
+}
+
+function viewReads(f){
+  var h=header(f)+problemStrip();
+  h+='<div class="card"><p class="scene">Plan your Three Reads. Tap questions to build the sequence, in order. Be careful: not every question belongs.</p><div class="tray">';
+  for(var i=0;i<3;i++){
+    var id=S.tray[i],c=null;
+    for(var j=0;j<READ_CARDS.length;j++)if(READ_CARDS[j].id===id)c=READ_CARDS[j];
+    h+='<button class="slot'+(c?' full':'')+'" data-act="unread" data-i="'+i+'"'+(S.reads.done?' disabled':'')+'><span class="n">Read '+(i+1)+'</span><span>'+(c?esc(c.t):'<i class="empty">tap a question below</i>')+'</span></button>';
+  }
+  h+='</div><div class="cards">';
+  for(var k=0;k<S.cards.length;k++){
+    var cd=S.cards[k],used=S.tray.indexOf(cd.id)>-1;
+    h+='<button class="rc" data-act="read" data-id="'+cd.id+'"'+((used||S.tray.length>=3||S.reads.done)?' disabled':'')+'>'+esc(cd.t)+'</button>';
+  }
+  h+='</div>';
+  if(S.reads.msg)h+='<div class="fb '+S.reads.msg.kind+'" role="status"><p><span class="tag">'+esc(S.reads.msg.head)+'</span></p><p>'+esc(S.reads.msg.body)+'</p></div>';
+  h+='<div class="row">';
+  if(!S.reads.done)h+='<button class="btn" data-act="checkreads"'+(S.tray.length<3?' disabled':'')+'>Check my Reads</button>';
+  else h+='<button class="btn" data-act="next">Continue</button>';
+  return h+'</div></div>';
+}
+
+function clipHtml(){
+  var ids=Object.keys(S.jotted),h='<div class="clip"><h3>Your clipboard</h3>';
+  if(!ids.length)return h+'<p class="empty">Nothing yet.</p></div>';
+  h+='<ul>';for(var i=0;i<ids.length;i++){var n=S.jotted[ids[i]];h+='<li><b>'+esc(n.name)+':</b> '+esc(n.tag)+'</li>';}
+  return h+'</ul></div>';
+}
+
+function viewWork(f){
+  var w=S.work,h=header(f)+problemStrip();
+  if(w.ended)return h+viewWorkEnd();
+  h+='<div class="card"><p class="scene">Students are working. Walk the room. Tap a desk to look at the work. Each look takes about 30 seconds of work time.</p>'+
+     '<div class="timer-row"><span>⏱ Work time left</span><span>'+mmss(S.time)+'</span></div><div class="timer"><i style="width:'+Math.max(0,S.time/360*100)+'%"></i></div>';
+  if(w.ev==='pending'){
+    h+='<div class="panel"><h3>Something’s happening at the back</h3><p>Two students are stacking counters into towers and giggling.</p>'+
+       '<button class="opt" data-act="ev" data-v="collect">“Let’s put the counters away so we can focus.” Collect them.</button>'+
+       '<button class="opt" data-act="ev" data-v="ask">Kneel down and ask, “How are your counters helping you think about the problem?”</button></div>';
+  }
+  if(w.ev==='done'&&w.evMsg)h+='<div class="fb '+(w.evKind==='collect'?'slip':'good')+'" role="status">'+esc(w.evMsg)+'</div>';
+  h+='<div class="room">';
+  for(var i=0;i<DESKS.length;i++){
+    var d=DESKS[i],seen=!!S.visited[d.id],jot=!!S.jotted[d.id];
+    h+='<button class="desk'+(seen?' seen':'')+(w.open===d.id?' open':'')+'" data-act="desk" data-id="'+d.id+'"'+(w.ev==='pending'?' disabled':'')+'><span class="av">'+d.name.charAt(0)+'</span><span>'+d.name+'</span><small>'+(jot?'📝 jotted':(seen?'seen':'unvisited'))+'</small></button>';
+  }
+  h+='</div>';
+  if(w.open&&w.ev!=='pending')h+=deskPanel(deskById(w.open));
+  h+=clipHtml();
+  if(w.warn){
+    h+='<div class="fb ok" role="status"><p>You’ve checked '+w.visitCount+' of 8 desks. If you move on now, you’ll choose from a thin clipboard.</p><div class="row"><button class="btn alt" data-act="keep">Keep circulating</button><button class="btn" data-act="callnow">Call time anyway</button></div></div>';
+  }else{
+    h+='<div class="row"><button class="btn" data-act="calltime"'+(w.visitCount<1?' disabled':'')+'>Call time and move to Discuss It</button></div>';
+  }
+  return h+'</div>';
+}
+
+function deskPanel(d){
+  var w=S.work,h='<div class="panel"><h3>'+esc(d.name)+'’s desk</h3>';
+  if(d.stuck){
+    if(w.gus==null){
+      h+='<div class="work">'+d.vis()+'</div><p>'+esc(d.see)+'</p><p class="ask">How do you respond?</p>'+
+        '<button class="opt" data-act="gus" data-v="tell">“Let me show you. Draw 4 groups and put 6 dots in each.”</button>'+
+        '<button class="opt" data-act="gus" data-v="ask">“What do you notice in the story? What could help you, a picture or counters?” Then walk away.</button>'+
+        '<button class="opt" data-act="gus" data-v="sit">Sit beside him and walk through it step by step until he finishes.</button>';
+    }else if(w.gus==='ask'){
+      h+='<div class="work">'+groups(2,6,'dot ctr')+'<p class="cap">Two piles so far</p></div><p>You walk away. When you circle back, Gus has pulled out counters and made two piles of six.</p>'+jotBtn(d);
+    }else{
+      h+='<div class="fb slip" role="status"><p><span class="tag">Slip: '+esc(SLIPS.S5.name)+'.</span></p><p><b>In the room:</b> Gus’s page now shows your steps, not his thinking, and it matches nobody else’s idea of the story. There’s nothing of his to share.</p><p><b>Try saying:</b> <span class="say">“What do you notice? What could help you?” Then walk away.</span></p></div>';
+    }
+  }else{
+    h+='<div class="work">'+d.vis()+'</div><p>'+esc(d.see)+'</p>'+jotBtn(d);
+  }
+  return h+'</div>';
+}
+function jotBtn(d){
+  var done=!!S.jotted[d.id];
+  var tag=d.stuck?'Started with counters: 2 groups so far':d.tag;
+  return '<div class="row"><button class="btn" data-act="jot" data-id="'+d.id+'"'+(done?' disabled':'')+'>'+(done?'Jotted ✓':'📝 Jot it on the clipboard')+'</button><button class="btn alt" data-act="closedesk">Keep walking</button></div>';
+}
+
+function viewWorkEnd(){
+  var w=S.work,n=Object.keys(S.jotted).length,h='<div class="card"><h2>Work time is over</h2>';
+  h+='<p>You looked at '+w.visitCount+' of 8 desks and jotted '+n+' strateg'+(n===1?'y':'ies')+'.</p>';
+  var items=[];
+  if(w.calledEarly)items.push('You called time with a short look around the room. Moving on once most students have a partial solution is right. It works best after you have seen a range of strategies.');
+  if(n<=2)items.push('A thin clipboard means thin choices in Discuss It. Two or three words at each stop is enough.');
+  if(!S.visited.gus)items.push('One desk stayed blank for the whole work time. A quick first lap (30–60 seconds) to check that everyone has started catches this.');
+  if(S.slips.has('S5'))items.push('Rescuing Gus took a minute of your time and left nothing of his to share.');
+  h+=items.length?'<ul>'+items.map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ul>':'<p>Nice circulating. Your clipboard comes with you into Discuss It.</p>';
+  h+=clipHtml()+'<p><b>Work time XP:</b> '+(S.res.m4?S.res.m4.xp:0)+' of 50</p><div class="row"><button class="btn" data-act="next">On to Discuss It</button></div></div>';
+  return h;
+}
+
+function viewPlan(f){
+  var h=header(f)+problemStrip(),ids=Object.keys(S.jotted);
+  h+='<div class="card"><p class="scene">Your clipboard is all you have to choose from. Pick two or three strategies to share, and put them in the order you’d call on them.</p>';
+  if(!ids.length)h+='<p class="empty">Your clipboard is empty, so there is nothing to select. This is what skipping the notes costs.</p>';
+  if(S.planDone)return h+planResult()+'</div>';
+  h+='<h3>Clipboard</h3>';
+  for(var i=0;i<ids.length;i++){
+    var n=S.jotted[ids[i]],inP=S.picks.indexOf(ids[i])>-1;
+    h+='<div class="pick"><span><b>'+esc(n.name)+':</b> '+esc(n.tag)+'</span><button class="mini" data-act="addpick" data-id="'+ids[i]+'"'+(inP||S.picks.length>=5?' disabled':'')+'>Share this</button></div>';
+  }
+  h+='<h3>Share order</h3>';
+  if(!S.picks.length)h+='<p class="empty">Tap “Share this” to build your order.</p>';
+  for(var j=0;j<S.picks.length;j++){
+    var nn=S.jotted[S.picks[j]];
+    h+='<div class="pick"><span><b>'+(j+1)+'.</b> '+esc(nn.name)+': '+esc(nn.tag)+'</span><span><button class="mini" data-act="up" data-i="'+j+'"'+(j===0?' disabled':'')+' aria-label="Move up">▲</button> <button class="mini" data-act="down" data-i="'+j+'"'+(j===S.picks.length-1?' disabled':'')+' aria-label="Move down">▼</button> <button class="mini" data-act="rmpick" data-i="'+j+'" aria-label="Remove">✕</button></span></div>';
+  }
+  h+='<div class="row"><button class="btn" data-act="lockplan"'+(S.picks.length<1&&ids.length>0?' disabled':'')+'>'+(ids.length?'Lock in my plan':'Continue with nothing to share')+'</button></div></div>';
+  return h;
+}
+function evalPlan(){
+  var P=S.picks.map(function(id){return S.jotted[id];}),n=P.length;
+  var real=P.filter(function(p){return p.kind!=='error';});
+  var s1=n>=2&&n<=3;
+  var s2=real.some(function(p){return p.level<=2;})&&real.some(function(p){return p.level>=3;});
+  var s3=real.length>=2;
+  for(var i=1;i<real.length;i++)if(real[i].level<real[i-1].level)s3=false;
+  var bonus=P.some(function(p){return p.kind==='error'||p.kind==='partial';});
+  return {s1:s1,s2:s2,s3:s3,bonus:bonus,stars:(s1?1:0)+(s2?1:0)+(s3?1:0),n:n};
+}
+function planResult(){
+  var r=S.res.m6,e=evalPlan(),stars='';
+  for(var i=0;i<3;i++)stars+=i<e.stars?'★':'☆';
+  var h='<h3>Your plan</h3><ol>'+S.picks.map(function(id){var n=S.jotted[id];return '<li><b>'+esc(n.name)+':</b> '+esc(n.tag)+'</li>';}).join('')+'</ol>';
+  h+='<p class="stars" aria-label="'+e.stars+' of 3 stars">'+stars+'</p><ul class="checks">';
+  h+='<li class="'+(e.s1?'':'no')+'">'+(e.s1?'Two or three strategies keeps the talk focused.':(e.n===0?'With nothing on the clipboard, there is nothing to compare. Next time, jot a name and a strategy at each stop.':e.n<2?'One strategy gives you nothing to compare.':'Four or more strategies turns Discuss It into show-and-tell and runs past the 8–12 minutes.'))+'</li>';
+  h+='<li class="'+(e.s2?'':'no')+'">'+(e.s2?'You have an easy entry point and a more efficient or structural idea.':'Aim for at least one picture or hands-on strategy and one more efficient or structural strategy. If your clipboard didn’t have both, that is the cost of a thin clipboard.')+'</li>';
+  h+='<li class="'+(e.s3?'':'no')+'">'+(e.s3?'Concrete to abstract lets each idea build on the last.':'Order matters. Start where most students are, then move toward the efficient or structural idea.')+'</li></ul>';
+  if(e.bonus)h+='<p>Including a partial solution or an error can be powerful. Highlight what the student did well, then compare it to another strategy.</p>';
+  h+='<p><b>XP:</b> '+r.xp+' of 30</p><div class="row"><button class="btn" data-act="next">Start the discussion</button></div>';
+  return h;
+}
+
+function viewPick(f){
+  var arrShared=S.picks.some(function(id){return S.jotted[id]&&S.jotted[id].level===4;});
+  var h=header(f)+problemStrip()+'<div class="card"><p class="scene">'+
+    (arrShared?'In Discuss It, the class talked about a structural idea (an array, a break-apart, or a turn-around).':'In Discuss It, the class talked about counting, pictures, and adding, but no one shared a structural idea like an array, a break-apart, or a turn-around.')+
+    ' You have about five minutes.</p><p class="ask">Choose one or two questions to bring to the whole class.</p>';
+  for(var i=0;i<QS.length;i++){
+    var q=QS[i],on=S.qpicks.indexOf(q.id)>-1;
+    h+='<button class="opt'+(on?' picked ok':'')+'" data-act="qpick" data-id="'+q.id+'"'+(S.pickDone?' disabled':'')+'>'+esc(q.t)+'</button>';
+  }
+  if(S.qmsg&&!S.pickDone)h+='<p class="cap">'+esc(S.qmsg)+'</p>';
+  if(S.pickDone){
+    var r=S.res.m9;
+    h+='<div class="fb '+(r.xp>=20?'good':'ok')+'" role="status"><p><span class="tag">'+(r.xp>=20?'Strong choice.':'Mixed choice.')+'</span></p><p>'+esc(r.msg)+'</p></div><div class="row"><button class="btn" data-act="next">Continue</button></div>';
+  }else{
+    h+='<div class="row"><button class="btn" data-act="lockq"'+(S.qpicks.length<1?' disabled':'')+'>Use these questions</button></div>';
+  }
+  return h+'</div>';
+}
+
+/* ---------- debrief ---------- */
+function makeCode(){
+  var ini=(S.name.replace(/[^A-Za-z]/g,'').toUpperCase()+'XXX').slice(0,3),mask=0;
+  S.slips.forEach(function(k){mask|=(1<<SLIPS[k].bit);});
+  var xp=totalXP(),chk=((xp*31+mask)%36).toString(36).toUpperCase();
+  return 'TDC-U2-'+ini+'-'+xp+'-'+('000'+mask.toString(16).toUpperCase()).slice(-4)+'-'+chk;
+}
+function decodeCode(code){
+  var m=/^TDC-U2-([A-Z]{3})-(\d{1,3})-([0-9A-F]{4})-([0-9A-Z])$/.exec(String(code).trim().toUpperCase());
+  if(!m)return null;
+  var xp=parseInt(m[2],10),mask=parseInt(m[3],16),chk=((xp*31+mask)%36).toString(36).toUpperCase();
+  if(chk!==m[4])return {bad:true};
+  return {ini:m[1],xp:xp,slips:Object.keys(SLIPS).filter(function(k){return mask&(1<<SLIPS[k].bit);})};
+}
+function viewDebrief(){
+  var xp=totalXP(),pct=xp/MAXXP,rank=pct>=.85?'Lesson Legend 🏆':(pct>=.65?'Seasoned Facilitator':'Rising Facilitator');
+  try{var b=JSON.parse(localStorage.getItem('rtl_g3u2_best')||'null');if(!b||xp>b.xp)localStorage.setItem('rtl_g3u2_best',JSON.stringify({xp:xp}));}catch(e){}
+  var h='<div class="card"><h1>'+rank+'</h1><p><b>'+xp+' of '+MAXXP+' XP</b></p><div class="bar" role="img" aria-label="'+Math.round(pct*100)+' percent"><i style="width:'+Math.round(pct*100)+'%"></i></div></div>';
+  h+='<div class="card"><h2>Your slips</h2>';
+  if(!S.slips.size)h+='<p>None. Every call kept the thinking with students.</p>';
+  else{
+    var keys=Object.keys(SLIPS).filter(function(k){return S.slips.has(k);});
+    for(var i=0;i<keys.length;i++)h+='<div class="slipitem"><b>'+esc(SLIPS[keys[i]].name)+'</b><br>'+esc(SLIPS[keys[i]].tip)+'</div>';
+    h+='<p><b>Pick one to try this week:</b> '+esc(SLIPS[keys[0]].name)+'.</p>';
+  }
+  h+='</div><div class="card"><h2>Badges</h2><div class="badges">';
+  for(var j=0;j<BADGES.length;j++){var bd=BADGES[j],ok=false;try{ok=!!bd.test();}catch(e){}
+    h+='<div class="badge'+(ok?'':' off')+'"><div class="e">'+bd.e+'</div><b>'+esc(bd.name)+'</b><p class="cap">'+esc(bd.how)+'</p></div>';}
+  h+='</div></div><div class="card"><h2>Your badge code</h2><p>Share this with your coach. It shows which slips are common across the team, not who made them.</p>'+
+     '<input class="code" id="code" type="text" readonly value="'+esc(makeCode())+'" aria-label="Your badge code"><div class="row"><button class="btn" data-act="copy">Copy code</button><button class="btn alt" data-act="replay">Play again</button></div><p class="cap" id="copymsg"></p>'+
+     '<p class="cap">Nothing leaves this page. The code is built on your device.</p></div>';
+  return h;
+}
+
+/* ---------- render ---------- */
+function render(){
+  renderHud();
+  var h='';
+  if(S.screen==='start')h=viewStart();
+  else if(S.screen==='debrief')h=viewDebrief();
+  else{
+    var f=FLOW[idx(S.screen)];
+    if(f.type==='choice')h=viewChoice(f);
+    else if(f.type==='reads')h=viewReads(f);
+    else if(f.type==='work')h=viewWork(f);
+    else if(f.type==='plan')h=viewPlan(f);
+    else if(f.type==='pick')h=viewPick(f);
+  }
+  app.innerHTML=h;
+}
+
+/* ---------- actions ---------- */
+function setRes(id,kind,earn,tries){
+  var r=S.res[id];
+  if(!r)r=S.res[id]={firstKind:kind,tries:tries,xp:0};
+  r.tries=tries;r.xp=Math.max(r.xp,earn);
+}
+var ACT={
+  start:function(){var el=document.getElementById('nm');fresh(el?el.value:'');S.screen='m1';render();window.scrollTo(0,0);},
+  decode:function(){
+    var el=document.getElementById('dec'),out=document.getElementById('decout'),d=decodeCode(el?el.value:'');
+    if(!d)out.innerHTML='<p>That doesn’t look like a code from this game.</p>';
+    else if(d.bad)out.innerHTML='<p>The check character doesn’t match. Check for a typo.</p>';
+    else out.innerHTML='<p><b>'+esc(d.ini)+'</b>: '+d.xp+' XP</p>'+(d.slips.length?'<ul>'+d.slips.map(function(k){return '<li>'+esc(SLIPS[k].name)+'</li>';}).join('')+'</ul>':'<p>No slips.</p>');
+  },
+  choose:function(el){
+    var id=S.screen,a=ensureAns(id),i=parseInt(el.dataset.i,10);if(a.picked!=null)return;
+    var o=CH[id].opts[i];a.picked=i;a.tries++;
+    if(o.slip)S.slips.add(o.slip);
+    var base=o.kind==='good'?20:(o.kind==='ok'?10:0),earn=a.tries===1?base:Math.floor(base/2);
+    if(!S.res[id])S.res[id]={firstKind:o.kind,tries:a.tries,xp:0};
+    S.res[id].tries=a.tries;S.res[id].xp=Math.max(S.res[id].xp,earn);
+    render();
+  },
+  retry:function(){var a=S.ans[S.screen];a.picked=null;render();},
+  next:function(){next();},
+  read:function(el){if(S.tray.length<3&&S.tray.indexOf(el.dataset.id)<0){S.tray.push(el.dataset.id);S.reads.msg=null;render();}},
+  unread:function(el){if(S.reads.done)return;var i=parseInt(el.dataset.i,10);if(i<S.tray.length){S.tray.splice(i,1);S.reads.msg=null;render();}},
+  checkreads:function(){
+    S.reads.tries++;
+    var ok=S.tray.join()==='r1,r2,r3',decoy=S.tray.some(function(x){return x.charAt(0)==='d';});
+    if(ok){
+      S.reads.done=true;setRes('m1','good',S.reads.tries===1?20:10,S.reads.tries);
+      S.reads.msg={kind:'good',head:'Strong move.',body:'Read 1 (“What is the problem about?”): you read aloud, students think, a few share at random, and you flag confusing words. Read 2 (“What are we trying to find out?”): a student volunteer reads and several say what it asks. Read 3 (“What are the important quantities and how are they related?”): students read together or with a partner, then turn and talk.'};
+    }else{
+      S.slips.add('S1');setRes('m1','slip',0,S.reads.tries);
+      S.reads.msg={kind:'slip',head:'Slip: '+SLIPS.S1.name+'.',body:decoy?'A question that names the operation or the model, or asks for the answer, takes the thinking away from students. The Reads are about the story, the question, and the quantities. Clear the tray and try again.':'Right questions, wrong order. Read 1 builds the story, Read 2 finds the question, and Read 3 brings in the quantities and how they relate. Clear the tray and try again.'};
+      S.tray=[];
+    }
+    render();
+  },
+  desk:function(el){
+    var w=S.work,id=el.dataset.id;if(w.ev==='pending')return;
+    w.warn=false;
+    if(!S.visited[id]){S.visited[id]=true;w.visitCount++;S.time-=30;}
+    w.open=id;
+    if(w.visitCount>=3&&!w.evTriggered){w.evTriggered=true;w.ev='pending';}
+    checkTime();render();
+  },
+  closedesk:function(){S.work.open=null;render();},
+  jot:function(el){
+    var d=deskById(el.dataset.id);if(S.jotted[d.id])return;
+    S.jotted[d.id]={name:d.name,tag:d.stuck?'Started with counters: 2 groups so far':d.tag,level:d.level,kind:d.kind};
+    updWorkXp();render();
+  },
+  gus:function(el){
+    var w=S.work,v=el.dataset.v;if(w.gus!=null)return;
+    if(v==='ask'){w.gus='ask';S.time-=20;}
+    else{w.gus='rescue';S.time-=60;S.slips.add('S5');}
+    updWorkXp();checkTime();render();
+  },
+  ev:function(el){
+    var w=S.work,v=el.dataset.v;if(w.ev!=='pending')return;
+    w.ev='done';w.evKind=v;S.time-=15;
+    if(v==='collect')S.slips.add('S6');
+    updWorkXp();checkTime();
+    w.evMsg=v==='collect'?'Slip: '+SLIPS.S6.name+'. Collecting the counters ends the tower-building, and the students lose the tool they were using to think. Try: “How is this helping you think?”':'Strong move. One student says, “We’re making 4 towers of 6.” They had been solving it. The counters stay.';
+    render();
+  },
+  keep:function(){S.work.warn=false;render();},
+  calltime:function(){
+    var w=S.work;
+    if(w.visitCount<4){w.warn=true;render();}else endWork(false);
+  },
+  callnow:function(){endWork(true);},
+  addpick:function(el){if(S.picks.indexOf(el.dataset.id)<0&&S.picks.length<5){S.picks.push(el.dataset.id);render();}},
+  rmpick:function(el){S.picks.splice(parseInt(el.dataset.i,10),1);render();},
+  up:function(el){var i=parseInt(el.dataset.i,10);if(i>0){var t=S.picks[i];S.picks[i]=S.picks[i-1];S.picks[i-1]=t;render();}},
+  down:function(el){var i=parseInt(el.dataset.i,10);if(i<S.picks.length-1){var t=S.picks[i];S.picks[i]=S.picks[i+1];S.picks[i+1]=t;render();}},
+  lockplan:function(){var e=evalPlan();S.planDone=true;S.res.m6={firstKind:'plan',tries:1,xp:e.stars*10,stars:e.stars};render();},
+  qpick:function(el){
+    var id=el.dataset.id,i=S.qpicks.indexOf(id);
+    if(i>-1){S.qpicks.splice(i,1);S.qmsg='';}
+    else if(S.qpicks.length>=2){S.qmsg='Choose one or two. Tap a chosen question to swap it out.';}
+    else{S.qpicks.push(id);S.qmsg='';}
+    render();
+  },
+  lockq:function(){
+    var arrShared=S.picks.some(function(id){return S.jotted[id]&&S.jotted[id].level===4;});
+    var chosen=S.qpicks.map(function(id){return QS.filter(function(q){return q.id===id;})[0];});
+    var decoy=chosen.some(function(q){return !q.good;});
+    var want=arrShared?'meaning':'array',high=chosen.some(function(q){return q.good&&q.pri===want;});
+    var xp,msg;
+    if(decoy){xp=5;msg='At least one choice is a task, not a connection. Copying words or racing through facts doesn’t help students link strategies to the key idea.';}
+    else if(high){xp=20;msg=arrShared?'Since a structural idea was already on the table, questions about what the numbers mean or which strategy to choose confirm and extend it.':'Since no one shared a structural idea, a question that links the picture to the array or breaks the fact apart brings in the key idea.';}
+    else{xp=12;msg=arrShared?'These are good questions, but the class already has the structural idea. Meaning or strategy choice would confirm it.':'These are good questions, but the class hasn’t seen an array or a break-apart yet. A question linking the picture to the array would bring it in.';}
+    S.pickDone=true;S.res.m9={firstKind:'pick',tries:1,xp:xp,msg:msg};render();
+  },
+  copy:function(){
+    var el=document.getElementById('code'),m=document.getElementById('copymsg');
+    el.select();
+    var done=false;
+    try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(el.value);done=true;}}catch(e){}
+    if(!done){try{done=document.execCommand('copy');}catch(e){}}
+    m.textContent=done?'Copied.':'Press and hold to copy the code.';
+  },
+  replay:function(){var n=S.name;fresh(n);S.screen='m1';render();window.scrollTo(0,0);}
+};
+function updWorkXp(){
+  var w=S.work,jots=Math.min(6,Object.keys(S.jotted).length),xp=jots*5;
+  if(w.gus==='ask')xp+=10;
+  if(w.evKind==='ask')xp+=10;
+  S.res.m4={firstKind:'work',tries:1,xp:xp};
+}
+function checkTime(){if(S.time<=0){S.time=0;endWork(false,true);}}
+function endWork(early,timeUp){
+  var w=S.work;w.ended=true;w.warn=false;w.open=null;w.calledEarly=!!early;
+  if(early)S.slips.add('S7');
+  if(Object.keys(S.jotted).length<=2)S.slips.add('S8');
+  updWorkXp();
+  render();window.scrollTo(0,0);
+}
+
+app.addEventListener('click',function(e){
+  var el=e.target.closest('[data-act]');if(!el||el.disabled)return;
+  var fn=ACT[el.dataset.act];if(fn)fn(el);
+});
+render();
+})();
+</script>
+</body>
+</html>
