@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Try–Discuss–Connect K–1: an interactive explainer</title>
+<meta name="description" content="How the Try–Discuss–Connect routine looks in kindergarten and first grade.">
+<style>
+  :root {
+    --bg:#F6F7F9; --card:#FFFFFF; --ink:#1B2433; --soft:#55607A; --line:#DDE2EA; --dot:#8A94A8;
+    --try:#0F766E; --try-bg:#E3F4F1;
+    --disc:#A74A06; --disc-bg:#FDF0DC;
+    --conn:#5B3FB5; --conn-bg:#EEE9FB;
+    --good:#166534; --good-bg:#E4F4E8; --warn:#9F1239; --warn-bg:#FCE7EC;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:#12161E; --card:#1B2130; --ink:#E8ECF3; --soft:#A3ADC2; --line:#2C3446; --dot:#6B7590;
+      --try:#5EC8BA; --try-bg:#173A37;
+      --disc:#F2A65A; --disc-bg:#3A2614;
+      --conn:#B5A3F5; --conn-bg:#2A2348;
+      --good:#7EDC9A; --good-bg:#183224; --warn:#F59AB0; --warn-bg:#3A1A24;
+    }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink);
+    font:17px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+  .wrap { max-width:860px; margin:0 auto; padding:40px 16px 64px; }
+  a { color:var(--try); }
+  h1 { font-size:clamp(1.8rem,4.5vw,2.5rem); margin:0 0 4px; letter-spacing:-.01em; }
+  h2 { font-size:1.35rem; margin:44px 0 12px; }
+  h3 { font-size:1.05rem; margin:18px 0 6px; }
+  p { margin:0 0 12px; }
+  ul { margin:0 0 12px; padding-left:1.2em; }
+  li { margin:4px 0; }
+  .lede { color:var(--soft); max-width:62ch; }
+  .back { display:inline-block; font-size:.9rem; margin-bottom:18px; text-decoration:none; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; }
+  .muted { color:var(--soft); font-size:.92rem; }
+
+  /* Timing bar */
+  .timebar { display:flex; height:46px; border-radius:10px; overflow:hidden; margin:10px 0 6px; font-weight:600; font-size:.9rem; }
+  .timebar div { display:flex; align-items:center; justify-content:center; text-align:center; padding:0 6px; }
+  .t-try { background:var(--try-bg); color:var(--try); flex:7; }
+  .t-disc { background:var(--disc-bg); color:var(--disc); flex:7; }
+  .t-conn { background:var(--conn-bg); color:var(--conn); flex:6; }
+
+  /* Compare table */
+  .compare { width:100%; border-collapse:collapse; font-size:.95rem; }
+  .compare th, .compare td { text-align:left; vertical-align:top; padding:10px 8px; border-bottom:1px solid var(--line); }
+  .compare th { font-size:.8rem; text-transform:uppercase; letter-spacing:.04em; color:var(--soft); }
+  .compare td:first-child { font-weight:600; width:24%; }
+  .compare td.k1 { background:var(--try-bg); }
+  @media (max-width:560px){ .compare td:first-child{width:auto;} .compare{font-size:.88rem;} }
+
+  /* Stage tabs */
+  .stages { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:14px 0; }
+  .stage { font:inherit; text-align:left; cursor:pointer; border:2px solid var(--line); background:var(--card);
+    color:var(--ink); border-radius:12px; padding:12px; }
+  .stage b { display:block; font-size:1.02rem; }
+  .stage span { display:block; font-size:.85rem; color:var(--soft); }
+  .stage[data-s="try"][aria-selected="true"] { border-color:var(--try); background:var(--try-bg); }
+  .stage[data-s="disc"][aria-selected="true"] { border-color:var(--disc); background:var(--disc-bg); }
+  .stage[data-s="conn"][aria-selected="true"] { border-color:var(--conn); background:var(--conn-bg); }
+  @media (max-width:560px){ .stages{grid-template-columns:1fr;} }
+  .panel { display:none; }
+  .panel.on { display:block; }
+  .panel .pill { display:inline-block; font-size:.78rem; font-weight:700; padding:3px 10px; border-radius:999px; margin-bottom:8px; }
+  .pill.try { background:var(--try-bg); color:var(--try); }
+  .pill.disc { background:var(--disc-bg); color:var(--disc); }
+  .pill.conn { background:var(--conn-bg); color:var(--conn); }
+  .cols { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media (max-width:640px){ .cols{grid-template-columns:1fr;} }
+
+  .problem { border-left:4px solid var(--try); background:var(--try-bg); padding:12px 14px; border-radius:8px; margin:10px 0 14px; }
+  .problem mark { background:transparent; color:var(--try); font-weight:700; }
+
+  .activity { margin-top:18px; border-top:1px dashed var(--line); padding-top:14px; }
+  .btnrow { display:flex; flex-wrap:wrap; gap:8px; margin:8px 0 10px; }
+  button.chip { font:inherit; font-size:.9rem; cursor:pointer; border:1px solid var(--line); background:var(--card);
+    color:var(--ink); border-radius:999px; padding:7px 14px; }
+  button.chip:hover { border-color:var(--dot); }
+  button.chip[aria-pressed="true"] { background:var(--ink); color:var(--card); border-color:var(--ink); }
+  button.chip:disabled { opacity:.45; cursor:default; }
+  .out { min-height:3em; padding:12px 14px; border-radius:10px; background:var(--bg); border:1px solid var(--line); }
+
+  /* Say this / not that */
+  .swap { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:8px 0; }
+  .swap div { padding:10px 12px; border-radius:10px; font-size:.95rem; }
+  .not { background:var(--warn-bg); } .not b { color:var(--warn); }
+  .yes { background:var(--good-bg); } .yes b { color:var(--good); }
+  @media (max-width:560px){ .swap{grid-template-columns:1fr;} }
+
+  /* Sequencing */
+  .seq { display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:10px; margin:10px 0; }
+  .work { font:inherit; cursor:pointer; text-align:left; background:var(--card); color:var(--ink);
+    border:2px solid var(--line); border-radius:12px; padding:12px; position:relative; min-height:96px; }
+  .work .ico { font-size:1.4rem; line-height:1; display:block; margin-bottom:6px; letter-spacing:2px; }
+  .work small { color:var(--soft); display:block; }
+  .work .num { position:absolute; top:8px; right:10px; width:26px; height:26px; border-radius:50%;
+    background:var(--disc); color:var(--card); font-weight:700; display:none; align-items:center; justify-content:center; font-size:.85rem; }
+  .work.picked { border-color:var(--disc); background:var(--disc-bg); }
+  .work.picked .num { display:flex; }
+
+  /* Slips accordion */
+  details { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 16px; margin:10px 0; }
+  summary { cursor:pointer; font-weight:600; }
+  details[open] summary { margin-bottom:8px; }
+
+  .grades { display:flex; gap:8px; margin:6px 0 12px; }
+  footer { margin-top:48px; color:var(--soft); font-size:.85rem; border-top:1px solid var(--line); padding-top:16px; }
+  button:focus-visible, summary:focus-visible { outline:3px solid var(--try); outline-offset:2px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="./">← All explainers</a>
+  <h1>Try–Discuss–Connect in K–1</h1>
+  <p class="lede">The routine is the same as in the upper grades, but kindergarten and first grade run it shorter, more out loud, and more hands-on. Tap each stage below and try its quick activity.</p>
+
+  <h2>What's different in K–1</h2>
+  <div class="card">
+    <p class="muted" style="margin-bottom:4px">A Develop session's Try–Discuss–Connect, about 20 minutes:</p>
+    <div class="timebar" role="img" aria-label="Try It 7 minutes, Discuss It 7 minutes, Connect It 6 minutes">
+      <div class="t-try">Try · 7</div><div class="t-disc">Discuss · 7</div><div class="t-conn">Connect · 6</div>
+    </div>
+    <p class="muted">Grades 2–5 run 10, 10 and 15 minutes, with Apply It inside Connect It.</p>
+    <table class="compare">
+      <thead><tr><th></th><th>Grades 2–5</th><th>K–1</th></tr></thead>
+      <tbody>
+        <tr><td>The problem</td><td>Students read it themselves</td><td class="k1">You read it aloud, and children retell it</td></tr>
+        <tr><td>Showing work</td><td>Drawings, models, equations</td><td class="k1">Fingers, objects, drawings, then a total</td></tr>
+        <tr><td>Talk</td><td>Partner talk, then whole-class discussion</td><td class="k1">Same, with sentence frames for every child</td></tr>
+        <tr><td>Connect It</td><td>Several written questions</td><td class="k1">K: one or two spoken questions. Grade 1: adds a Model It page with a few Connect It questions</td></tr>
+        <tr><td>Apply It</td><td>Practice problems</td><td class="k1">A hands-on partner activity that can become a center</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>The three stages</h2>
+  <div class="stages" role="tablist">
+    <button class="stage" role="tab" data-s="try" aria-selected="true"><b>Try It</b><span>Children make sense of it and solve it their way</span></button>
+    <button class="stage" role="tab" data-s="disc" aria-selected="false"><b>Discuss It</b><span>Partners share, then you pick who shares with the class</span></button>
+    <button class="stage" role="tab" data-s="conn" aria-selected="false"><b>Connect It</b><span>Link the shared ways to the math idea</span></button>
+  </div>
+
+  <p class="muted">Sample problem (kindergarten, adding within 5):</p>
+  <div class="problem"><mark>3 frogs</mark> are on a log. <mark>2 more frogs</mark> hop on. How many frogs are on the log now? How can you show it?</div>
+
+  <!-- TRY IT -->
+  <section class="panel card on" id="p-try" role="tabpanel">
+    <span class="pill try">Try It · about 7 min</span>
+    <p>Children figure out what the story is about, then solve it on their own with any tool they choose. The struggle is the point, so a partial answer is fine.</p>
+    <div class="cols">
+      <div><h3>Children</h3><ul>
+        <li>Retell the story in their own words</li>
+        <li>Choose a tool: fingers, cubes, counters, a drawing</li>
+        <li>Show the total in their own way</li>
+      </ul></div>
+      <div><h3>You</h3><ul>
+        <li>Read the problem aloud using the language routine (Three Reads, Say It Another Way)</li>
+        <li>Give quiet think time and resist showing a strategy</li>
+        <li>Circulate and jot down who did what. This is your sharing plan.</li>
+      </ul></div>
+    </div>
+
+    <div class="activity">
+      <h3>Try Three Reads on the sample problem</h3>
+      <div class="btnrow" id="reads">
+        <button class="chip" data-r="0">Read 1</button>
+        <button class="chip" data-r="1" disabled>Read 2</button>
+        <button class="chip" data-r="2" disabled>Read 3</button>
+      </div>
+      <div class="out" id="readOut">Tap Read 1 to begin. Each read has one job.</div>
+    </div>
+
+    <div class="activity">
+      <h3>Say this, not that</h3>
+      <p class="muted">Overscaffolding usually sounds helpful. Here's how to swap it out:</p>
+      <div class="swap"><div class="not"><b>Not:</b> "Get 3 cubes. Now get 2 more. Count them all."</div><div class="yes"><b>Say:</b> "What is happening in the story? What could you use to show the frogs?"</div></div>
+      <div class="swap"><div class="not"><b>Not:</b> Modeling the strategy on the board before children try</div><div class="yes"><b>Do:</b> Keep tools within reach and ask, "Have you tried using your fingers or cubes?"</div></div>
+      <div class="swap"><div class="not"><b>Not:</b> Waiting until every child has the answer</div><div class="yes"><b>Do:</b> Move on when most children have a start. Their partial work fuels the discussion.</div></div>
+    </div>
+  </section>
+
+  <!-- DISCUSS IT -->
+  <section class="panel card" id="p-disc" role="tabpanel">
+    <span class="pill disc">Discuss It · about 7 min</span>
+    <p>Partners explain to each other first. Then <em>you</em> choose 2–3 children and decide the order they share, so the discussion builds from concrete to abstract.</p>
+    <div class="cols">
+      <div><h3>Children</h3><ul>
+        <li>Partner A shares first, then Partner B</li>
+        <li>Use a frame: "I used ___ to show ___."</li>
+        <li>Show agreement or disagreement with hand signals</li>
+      </ul></div>
+      <div><h3>You</h3><ul>
+        <li>Name who shares first in each pair</li>
+        <li>Pick and order the sharers <em>before</em> calling the class together</li>
+        <li>Ask, "How does [name]'s way show the total?"</li>
+      </ul></div>
+    </div>
+
+    <div class="activity">
+      <h3>Sequence the student work</h3>
+      <p class="muted">You saw these four ways while circulating. Tap them in the order you'd have children share.</p>
+      <div class="seq" id="seq"></div>
+      <div class="btnrow"><button class="chip" id="seqCheck">Check my order</button><button class="chip" id="seqReset">Start over</button></div>
+      <div class="out" id="seqOut">Tap a card to put it first.</div>
+    </div>
+  </section>
+
+  <!-- CONNECT IT -->
+  <section class="panel card" id="p-conn" role="tabpanel">
+    <span class="pill conn">Connect It · about 6 min</span>
+    <p>Bridge what children did to the math idea and its words. Pick the one or two questions that confirm today's purpose. This is a conversation, not a page to fill in.</p>
+    <div class="cols">
+      <div><h3>Children</h3><ul>
+        <li>Say how their way matches a classmate's or the book's model</li>
+        <li>Use the new word in a sentence: "The <b>total</b> is 5."</li>
+        <li>Move into the Apply It activity</li>
+      </ul></div>
+      <div><h3>You</h3><ul>
+        <li>Ask 1–2 Teacher's Guide questions, chosen from what you heard</li>
+        <li>Name the vocabulary as children use it</li>
+        <li>Grade 1: if no one made the Model It model, connect it to theirs</li>
+      </ul></div>
+    </div>
+
+    <div class="activity">
+      <h3>Teach vocabulary in context</h3>
+      <p class="muted">Tap a moment to see how to bring in the word <b>total</b>.</p>
+      <div class="btnrow" id="vocab">
+        <button class="chip" data-v="0">During Try It</button>
+        <button class="chip" data-v="1">During Discuss It</button>
+        <button class="chip" data-v="2">During Connect It</button>
+      </div>
+      <div class="out" id="vocabOut">Words stick when children meet them while they're doing the math, not in a list beforehand.</div>
+    </div>
+  </section>
+
+  <h2>The 20% that gives 80% of the payoff</h2>
+  <ul>
+    <li><b>Protect think time.</b> Read aloud, ask "what's happening?", then step back. No modeling the strategy.</li>
+    <li><b>Plan the share while you circulate.</b> Choose 2–3 children and an order, from concrete to more abstract.</li>
+    <li><b>Ask 1–2 questions in Connect It, then move on.</b> The goal is the session purpose, not a finished page.</li>
+  </ul>
+
+  <h2>Common slips</h2>
+  <details><summary>Overscaffolding during Try It</summary>
+    <p>Telling children which tool to use or walking them step by step takes away the thinking. Everyone ends up with the same strategy, and Discuss It has nothing to compare.</p>
+    <p><b>Instead:</b> Ask open questions ("What could you use to show it?"), keep tools within reach, and accept partial work.</p></details>
+  <details><summary>Calling on volunteers instead of sequencing</summary>
+    <p>Whoever raises a hand first sets the direction. The class may jump straight to the most efficient way and never see how the strategies connect.</p>
+    <p><b>Instead:</b> Use your circulation notes. Choose sharers and an order, and tell each child ahead of time: "I'd love for you to share your cubes."</p></details>
+  <details><summary>Teaching vocabulary apart from the math</summary>
+    <p>Front-loading a word list before the problem means words without meaning.</p>
+    <p><b>Instead:</b> Name the word as it happens ("You found the <i>total</i>!"), post sentence frames that use it, and ask children to say it back.</p></details>
+  <details><summary>Treating the workbook as the goal</summary>
+    <p>Completing every item on the page eats up the 6 minutes for Connect It and turns discussion into dictation.</p>
+    <p><b>Instead:</b> Pick 1–2 questions that match the session purpose. Discuss them, or have children draw or write. Skip the rest.</p></details>
+
+  <h2>Grade lens</h2>
+  <div class="grades" id="grades">
+    <button class="chip" data-g="k" aria-pressed="true">Kindergarten</button>
+    <button class="chip" data-g="1" aria-pressed="false">Grade 1</button>
+  </div>
+  <div class="card" id="gradeOut"></div>
+
+  <footer>
+    Based on Curriculum Associates' i-Ready Classroom Mathematics planning and coaching resources (K–1 pacing, reflection look-fors and Strengthening Teacher Practice tools) and on classroom observation. Sample problems are original. Exact prompts, language routines and timing vary by lesson, so check your Teacher's Guide.
+  </footer>
+</div>
+
+<script>
+  // Stage tabs
+  const tabs = document.querySelectorAll(".stage");
+  tabs.forEach(t => t.addEventListener("click", () => {
+    tabs.forEach(x => x.setAttribute("aria-selected", x === t));
+    document.querySelectorAll(".panel").forEach(p => p.classList.toggle("on", p.id === "p-" + t.dataset.s));
+  }));
+
+  // Three Reads
+  const reads = [
+    "<b>Read 1: What's the story about?</b> Read it aloud with no numbers emphasized. Ask: \"What is happening?\" Listen for: frogs on a log, and more frogs come.",
+    "<b>Read 2: What are we trying to find?</b> Read again. Ask: \"What's the question?\" Listen for: how many frogs are on the log now.",
+    "<b>Read 3: What's important?</b> Read once more. Ask: \"What numbers matter? What do they tell us?\" Listen for: 3 frogs at the start and 2 more that hop on. Then hand it over: \"Show it your way.\""
+  ];
+  const rb = document.querySelectorAll("#reads button");
+  rb.forEach(b => b.addEventListener("click", () => {
+    const i = +b.dataset.r;
+    document.getElementById("readOut").innerHTML = reads[i];
+    rb.forEach(x => x.setAttribute("aria-pressed", x === b));
+    if (rb[i + 1]) rb[i + 1].disabled = false;
+  }));
+
+  // Sequencing
+  const work = [
+    { id: "fingers", ico: "✋", t: "Fingers", d: "Held up 3, then 2 more, counted all", rank: 0 },
+    { id: "draw", ico: "🐸🐸🐸 🐸🐸", t: "Drawing", d: "Drew 5 frogs and counted them", rank: 1 },
+    { id: "cubes", ico: "🟩🟩🟩🟦🟦", t: "Cubes", d: "A train of 3 and a train of 2, joined", rank: 2 },
+    { id: "frame", ico: "●●●●●", t: "Counters in a 5-frame", d: "Filled the frame and saw it was full: 5", rank: 3 }
+  ];
+  const shuffled = [work[2], work[0], work[3], work[1]];
+  let order = [];
+  const seqEl = document.getElementById("seq"), seqOut = document.getElementById("seqOut");
+  function drawSeq() {
+    seqEl.innerHTML = "";
+    shuffled.forEach(w => {
+      const b = document.createElement("button");
+      const pos = order.indexOf(w.id);
+      b.className = "work" + (pos > -1 ? " picked" : "");
+      b.innerHTML = `<span class="num">${pos + 1}</span><span class="ico" aria-hidden="true">${w.ico}</span><b>${w.t}</b><small>${w.d}</small>`;
+      b.addEventListener("click", () => {
+        if (pos > -1) order.splice(pos, 1); else order.push(w.id);
+        seqOut.textContent = order.length < 4 ? `Pick ${order.length ? "the next one" : "who goes first"}.` : "All placed. Check your order.";
+        drawSeq();
+      });
+      seqEl.appendChild(b);
+    });
+  }
+  drawSeq();
+  document.getElementById("seqReset").onclick = () => { order = []; seqOut.textContent = "Tap a card to put it first."; drawSeq(); };
+  document.getElementById("seqCheck").onclick = () => {
+    if (order.length < 4) { seqOut.textContent = "Place all four first."; return; }
+    const ideal = ["fingers", "draw", "cubes", "frame"];
+    const match = order.every((id, i) => id === ideal[i]);
+    seqOut.innerHTML = (match ? "<b>Nice sequence.</b> " : "<b>One possible order:</b> fingers → drawing → cubes → 5-frame. ") +
+      "Starting with fingers lets every child see their own thinking. Each next share is a little more organized. The 5-frame ends the discussion on structure: you can <i>see</i> the 5 without counting. Other orders can work too, as long as you've chosen one on purpose.";
+  };
+
+  // Vocabulary
+  const vocab = [
+    "<b>Try It:</b> Don't define it yet. As you circulate, listen for children who say \"all together\" or \"in all.\" Those are the moments you'll name later.",
+    "<b>Discuss It:</b> Re-voice the share using the word: \"So Maya counted all the frogs. She found the <b>total</b>.\" Post the frame \"The total is ___.\" and have partners use it.",
+    "<b>Connect It:</b> Ask, \"Where is the total in Ben's cubes? In the 5-frame?\" Children point and say \"The total is 5.\" Now the word is tied to two models."
+  ];
+  const vb = document.querySelectorAll("#vocab button");
+  vb.forEach(b => b.addEventListener("click", () => {
+    vb.forEach(x => x.setAttribute("aria-pressed", x === b));
+    document.getElementById("vocabOut").innerHTML = vocab[+b.dataset.v];
+  }));
+
+  // Grade lens
+  const grades = {
+    k: `<h3 style="margin-top:0">Kindergarten</h3><ul>
+      <li><b>Numbers:</b> within 5, then 10. Stories children can act out.</li>
+      <li><b>Tools:</b> fingers, connecting cubes, counters, 5-frames. Act It Out works well.</li>
+      <li><b>Recording:</b> a drawing plus the total is plenty.</li>
+      <li><b>Connect It:</b> spoken, usually one key question. Example: "How can you show the 3 at the start and the 2 that came?"</li>
+      <li><b>Talk support:</b> "I used ___ to show ___." "To show ___, I ___."</li></ul>`,
+    "1": `<h3 style="margin-top:0">Grade 1</h3><ul>
+      <li><b>Numbers:</b> within 20. Strategies matter now (count all → count on → make a ten).</li>
+      <li><b>Tools:</b> two-color counters, 10-frames, number bonds.</li>
+      <li><b>Model It:</b> a worked model in the book. If no child made it, connect it to their models: "Where are the 8 in this 10-frame?"</li>
+      <li><b>Connect It:</b> a few questions that children discuss, draw or write. Choose the ones that fit what you heard.</li>
+      <li><b>Talk support:</b> "Can you explain ___?" "I think you said ___. Is that right?"</li>
+      <li><b>Try this sequence (9 + 4):</b> count all → count on from 9 → move 1 over to make 10, then 10 + 3.</li></ul>`
+  };
+  const gb = document.querySelectorAll("#grades button");
+  function showGrade(g) {
+    gb.forEach(x => x.setAttribute("aria-pressed", x.dataset.g === g));
+    document.getElementById("gradeOut").innerHTML = grades[g];
+  }
+  gb.forEach(b => b.addEventListener("click", () => showGrade(b.dataset.g)));
+  showGrade("k");
+</script>
+</body>
+</html>
